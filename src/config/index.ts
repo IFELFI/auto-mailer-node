@@ -22,8 +22,8 @@ type T = Static<typeof T>;
 function validateEnv(raw: Record<string, unknown>) {
   const config: T = {
     server: {
-      port: parseInt(raw.PORT as string),
-      host: raw.HOST as string,
+      port: parseInt(raw.PORT as string) || 3000,
+      host: raw.HOST as string || 'localhost',
     },
     mail: {
       host: raw.MAIL_HOST as string,
