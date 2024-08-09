@@ -1,7 +1,8 @@
 import { validate } from '../validations';
 import config from '../config';
-import { transporter } from '../config/transporter';
+import { transporter } from '../utils/transporter';
 import { AuthCodeData, AuthCodeDataSchema } from '../validations/authCode';
+import { logger } from '../utils/logger';
 
 export async function sendAuthCode(data: AuthCodeData) {
   validate(AuthCodeDataSchema, data)
@@ -12,5 +13,9 @@ export async function sendAuthCode(data: AuthCodeData) {
     text: `Your auth code is ${data.code}`,
   });
 
-  console.log(`Message sent: ${result.messageId}`);
+  if (result.accepted.length) {
+    logger.info(`Auth code sent to ${data.email}`);
+  } else {
+    logger.error(`Failed to send auth code to ${data.email}`);
+  }
 }
