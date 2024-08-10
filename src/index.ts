@@ -6,15 +6,17 @@ import { sendAuthCode } from './services/authCode.service';
 import { logger } from './utils/logger';
 import { validate } from './validations';
 import { generateError } from './utils/error';
+import { ResponseData } from './interfaces/res';
 
 const server = net.createServer((socket) => {
   socket.setEncoding('utf-8');
 
   socket.on('data', (buffer: Buffer) => {
+    logger.info(`Received data: ${buffer.toString()}`);
     let bufferData: BufferData | undefined
     try {
-      bufferData = JSON.parse(buffer.toString());
-      validate(BufferDataSchema, bufferData);
+      const jsonData = JSON.parse(buffer.toString('utf8'));
+      bufferData = validate<BufferData>(BufferDataSchema, jsonData);
     } catch (error: Error | unknown) {
       if (error instanceof Error) {
         const errorMessage = generateError(error.message);
@@ -29,8 +31,17 @@ const server = net.createServer((socket) => {
       }
     }
 
+    // service by command
+    // sendAuthCode
     if (bufferData && bufferData.cmd === 'sendAuthCode') {
       sendAuthCode(bufferData.data);
+      const resData: ResponseData = {
+        success: true,
+        message: 'Auth code sent',
+      };
+      socket.write(JSON.stringify(resData));
+
+    // if command is not found
     } else {
       socket.write('Unknown command');
       logger.error(JSON.stringify(bufferData));

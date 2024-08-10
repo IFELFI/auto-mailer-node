@@ -1,7 +1,7 @@
 import { TObject } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 
-export const validate = (schema: TObject, data: unknown) => {
+export const validate = <T>(schema: TObject, data: unknown): T => {
   const validate = [...Value.Errors(schema, data)];
   if (validate.length > 0) {
     throw new Error(
@@ -10,4 +10,5 @@ export const validate = (schema: TObject, data: unknown) => {
         .join(', ')}`
     );
   }
+  return data as T;
 };
