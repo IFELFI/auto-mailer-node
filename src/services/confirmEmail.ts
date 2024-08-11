@@ -1,16 +1,19 @@
 import { validate } from '../validations';
 import config from '../config';
 import { transporter } from '../utils/transporter';
-import { AuthCodeData, AuthCodeDataSchema } from '../validations/authCode';
+import {
+  ConfirmEmailReq,
+  ConfirmEmailReqSchema,
+} from '../validations/ConfirmEmailReq';
 import { logger } from '../utils/logger';
 
-export async function sendAuthCode(data: AuthCodeData) {
-  validate(AuthCodeDataSchema, data)
+export async function confirmEmail(data: ConfirmEmailReq) {
+  validate(ConfirmEmailReqSchema, data);
   const result = await transporter.sendMail({
     from: config.mail.auth.user,
     to: data.email,
-    subject: 'Your auth code',
-    text: `Your auth code is ${data.code}`,
+    subject: '[IFELFI] Confirm your email address',
+    text: `Your auth code is ${data.link}`,
   });
 
   if (result.accepted.length) {
