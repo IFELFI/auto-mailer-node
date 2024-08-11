@@ -6,6 +6,7 @@ import {
   ConfirmEmailReqSchema,
 } from '../validations/ConfirmEmailReq';
 import { logger } from '../utils/logger';
+import { confirmEmailHtml } from '../mailTexts/confirmEmail';
 
 export async function confirmEmail(data: ConfirmEmailReq) {
   validate(ConfirmEmailReqSchema, data);
@@ -13,12 +14,12 @@ export async function confirmEmail(data: ConfirmEmailReq) {
     from: config.mail.auth.user,
     to: data.email,
     subject: '[IFELFI] Confirm your email address',
-    text: `Your auth code is ${data.link}`,
+    html: confirmEmailHtml(data.link),
   });
 
   if (result.accepted.length) {
-    logger.info(`Auth code sent to ${data.email}`);
+    logger.info(`Email sent to ${data.email}`);
   } else {
-    logger.error(`Failed to send auth code to ${data.email}`);
+    logger.error(`Failed to send email to ${data.email}`);
   }
 }
