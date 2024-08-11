@@ -37,7 +37,7 @@ const server = net.createServer((socket) => {
       confirmEmail(bufferData.data);
       const resData: ResponseData = {
         success: true,
-        message: 'Auth code sent',
+        message: "email sent"
       };
       socket.write(JSON.stringify(resData));
 
