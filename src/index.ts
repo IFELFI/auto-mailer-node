@@ -2,7 +2,7 @@ import net from 'net';
 import 'dotenv/config';
 import config from './config';
 import { BufferData, BufferDataSchema } from './validations/buffer';
-import { sendAuthCode } from './services/authCode.service';
+import { confirmEmail } from './services/confirmEmail';
 import { logger } from './utils/logger';
 import { validate } from './validations';
 import { generateError } from './utils/error';
@@ -13,7 +13,7 @@ const server = net.createServer((socket) => {
 
   socket.on('data', (buffer: Buffer) => {
     logger.info(`Received data: ${buffer.toString()}`);
-    let bufferData: BufferData | undefined
+    let bufferData: BufferData | undefined;
     try {
       const jsonData = JSON.parse(buffer.toString('utf8'));
       bufferData = validate<BufferData>(BufferDataSchema, jsonData);
@@ -33,15 +33,15 @@ const server = net.createServer((socket) => {
 
     // service by command
     // sendAuthCode
-    if (bufferData && bufferData.cmd === 'sendAuthCode') {
-      sendAuthCode(bufferData.data);
+    if (bufferData && bufferData.cmd === 'confirmEmail') {
+      confirmEmail(bufferData.data);
       const resData: ResponseData = {
         success: true,
         message: 'Auth code sent',
       };
       socket.write(JSON.stringify(resData));
 
-    // if command is not found
+      // if command is not found
     } else {
       socket.write('Unknown command');
       logger.error(JSON.stringify(bufferData));
@@ -64,5 +64,7 @@ server.on('error', (err) => {
 });
 
 server.listen(config.server.port, config.server.host, () => {
-  logger.info(`Server is listening on ${config.server.host}:${config.server.port}`);
+  logger.info(
+    `Server is listening on ${config.server.host}:${config.server.port}`
+  );
 });
