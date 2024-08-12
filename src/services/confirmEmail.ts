@@ -6,7 +6,7 @@ import {
   ConfirmEmailReqSchema,
 } from '../validations/ConfirmEmailReq';
 import { logger } from '../utils/logger';
-import { confirmEmailHtml } from '../pages/confirmEmail';
+import { confirmEmailHtml } from '../contents/confirmEmail';
 
 export async function confirmEmail(data: ConfirmEmailReq) {
   validate(ConfirmEmailReqSchema, data);
