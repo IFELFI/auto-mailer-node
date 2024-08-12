@@ -18,6 +18,6 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/.env ./
 
-EXPOSE 3000
+EXPOSE 5000
 
 ENTRYPOINT ["node", "./dist/index.js"]

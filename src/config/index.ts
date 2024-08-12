@@ -23,7 +23,7 @@ function validateEnv(raw: Record<string, unknown>) {
   const config: T = {
     server: {
       port: parseInt(raw.PORT as string) || 3000,
-      host: raw.HOST as string || 'localhost',
+      host: raw.HOST as string || '0.0.0.0',
     },
     mail: {
       host: raw.MAIL_HOST as string,
